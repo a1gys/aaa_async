@@ -3,14 +3,17 @@ from typing import Callable, Coroutine, Any
 
 
 async def await_my_func(f: Callable[..., Coroutine] | Task | Coroutine) -> Any:
-    # На вход приходит одна из стадий жизненного цикла корутины, необходимо вернуть результат
-    # её выполнения.
+    # На вход приходит одна из стадий жизненного цикла корутины, необходимо
+    # вернуть результат её выполнения.
 
     if isinstance(f, Callable):
-        pass
+        coroutine = f()
     elif isinstance(f, Task):
-        pass
+        coroutine = f.get_coro()
     elif isinstance(f, Coroutine):
-        pass
+        coroutine = f
     else:
         raise ValueError('invalid argument')
+
+    result = await coroutine
+    return result
